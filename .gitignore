@@ -15,9 +15,9 @@ tmp
 
 # Build
 public/css/main.css
-*.js.map
-*.js
-package-lock.json
+*/*.js.map
+*/*.js
+*/package-lock.json
 
 # Coverage reports
 coverage
@@ -26,7 +26,7 @@ coverage
 .env
 
 # Dependency directory
-node_modules
+*/node_modules
 bower_components
 
 # Editors
@@ -38,7 +38,7 @@ bower_components
 Thumbs.db
 
 # Ignore built ts files
-dist/**/*
+*/dist/**/*
 
 # ignore yarn.lock
 yarn.lock
