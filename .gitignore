@@ -1,0 +1,14 @@
+# Ignore build files
+*/dist/
+
+# Ignore dependencies
+*/node_modules/
+
+# Ignore editors
+.DS_Store
+
+
+.npmrc
+screenshots/
+*.bak
+*.log
