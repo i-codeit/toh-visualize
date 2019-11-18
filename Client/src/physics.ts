@@ -73,7 +73,6 @@ export class Physics {
         let currentPos = this.ui.getBlocks()[this.currentEvent.blockId].getPosition();
 
         // final position is the tower top position of the tower the block should move to
-        // TODO: don't update once final positions are set
         let finalPos = this.ui.getTowers()[toTowerIndex].getTowerTopPosition();
 
         ctx.beginPath();

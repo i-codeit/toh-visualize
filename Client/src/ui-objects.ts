@@ -62,7 +62,9 @@ export class UIObjects {
 
     public initializeTowerTop() {
         let canvasHeight = this.canvas.clientHeight;
-        this.towers[0].setTowerTopPosition(this.blocks[this.getNumberOfBlocksToDraw()-1].getPosition().y);
+        this.towers[0].setTowerTopPosition(
+            this.blocks[this.getNumberOfBlocksToDraw()-1].getPosition().y
+            - this.blocks[this.getNumberOfBlocksToDraw()-1].getRadiusY());
         this.towers[1].setTowerTopPosition(canvasHeight);
         this.towers[2].setTowerTopPosition(canvasHeight);
     }

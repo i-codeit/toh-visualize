@@ -15,9 +15,10 @@ export function initialize(): void {
 
     // dummy insert element 
     eq.pushEvent({blockId: 9, towerFrom: "A", towerTo: "B"});
-    eq.pushEvent({blockId: 8, towerFrom: "A", towerTo: "B"});
-    eq.pushEvent({blockId: 7, towerFrom: "A", towerTo: "C"});
-    eq.pushEvent({blockId: 8, towerFrom: "B", towerTo: "C"});
+    eq.pushEvent({blockId: 8, towerFrom: "A", towerTo: "C"});
+    eq.pushEvent({blockId: 7, towerFrom: "A", towerTo: "B"});
+    eq.pushEvent({blockId: 8, towerFrom: "C", towerTo: "A"});
+    // eq.pushEvent({blockId: 8, towerFrom: "C", towerTo: "B"});
     // eq.pushEvent({blockId: 2, towerFrom: 0, towerTo: 2});
 
     // Pop the first event here
