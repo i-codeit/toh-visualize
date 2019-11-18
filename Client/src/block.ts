@@ -50,6 +50,10 @@ export class Block implements Object{
         return this.position;
     }
 
+    public update(position: {x:number, y:number}) {
+        this.position.x = position.x;
+        this.position.y = position.y;
+    }
     /* public update(deltaTime: number) {
         if(!deltaTime)
             return;

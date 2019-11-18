@@ -37,7 +37,7 @@ export class UIObjects {
                 currentPos = { x: currentPos.x + leftWidth, y: canvasHeight };
             }
             else {
-                currentPos = { x: currentPos.x + leftWidth + rigthWidth, y: canvasHeight };
+                currentPos = { x: currentPos.x + leftWidth + rigthWidth + towerWidth, y: canvasHeight };
             }
             let tower = new Tower(this.ctx, TowerId[index], currentPos);
             this.towers.push(tower);

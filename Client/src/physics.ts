@@ -1,84 +1,157 @@
-import { Constants } from "./constants";
 import { UIObjects } from "./ui-objects";
+import { EventQueue } from "./eventQueue";
+import { EventInterface } from "./eventInterface";
+import { TowerId } from "./constants";
 
 export class Physics {
-    private fps: number;
     private percent: number;
     private direction: number;
     private ui: UIObjects;
+    private eq: EventQueue;
+    private currentEvent: EventInterface;
+    private update: boolean;
 
-    constructor(ui: UIObjects) {
+    constructor(
+        ui: UIObjects,
+        eq: EventQueue
+    ) {
         this.ui = ui;
-        this.fps = Constants.FPS;
+        this.eq = eq;
         this.percent = 0;
         this.direction = 1;
+        this.currentEvent = {
+            blockId: -1,
+            towerFrom: "",
+            towerTo: ""
+        };
+        this.update = true;
     }
 
     public animate(deltaTime: number): void {
-        // set the animation position (0-100)
-        this.percent += this.direction;
-        if (this.percent < 0) {
+        // check for updated event
+        if (this.isEventUpdated()) {
+            this.currentEvent = this.eq.getCurrentEvent();
             this.percent = 0;
             this.direction = 1;
-        };
-        if (this.percent > 100) {
-            this.percent = 100;
-            this.direction = 0;
-        };
-    
-        this.moveBlock(this.percent);
+            this.update = true;
+        }
+
+        if (
+            this.currentEvent.blockId !== -1
+            && this.currentEvent.towerFrom !== ""
+            && this.currentEvent.towerTo !== ""
+        ) {
+            // set the animation position (0-100)
+            this.percent += this.direction;
+            if (this.percent < 0) {
+                this.percent = 0;
+                this.direction = 1;
+            };
+            if (this.percent > 100) {
+                this.percent = 100;
+                this.direction = 0;
+
+                // adjust the height of the towers
+                this.adjustTowerHeight();
+                this.update = false;
+                // Pop the queue to get next event
+                this.eq.popEvent();
+            };
+
+            if(this.update)
+                this.moveBlock(this.percent);
+        }
     }
 
     public moveBlock(sliderValue: number): void {
         let ctx: CanvasRenderingContext2D = this.ui.getContext();
+        let toTowerIndex: number = this.getTowerIndex(this.currentEvent.towerTo);
+
+        let fromTowerIndex: number = this.getTowerIndex(this.currentEvent.towerFrom);
+
+        // Current position of the block to move
+        let currentPos = this.ui.getBlocks()[this.currentEvent.blockId].getPosition();
+
+        // final position is the tower top position of the tower the block should move to
+        // TODO: don't update once final positions are set
+        let finalPos = this.ui.getTowers()[toTowerIndex].getTowerTopPosition();
+
         ctx.beginPath();
-        // ctx.moveTo(250, 120);
-        // ctx.bezierCurveTo(290, -40, 300, 200, 400, 150);
-        ctx.moveTo(100, 670);
-        ctx.bezierCurveTo(80, 200, 330, 200, 310, 700);
-        // ctx.strokeStyle = 'blue';
-        // ctx.stroke();
-    
-    
+        ctx.moveTo(currentPos.x, currentPos.y);
+        ctx.bezierCurveTo(
+            currentPos.x - 20,
+            currentPos.y - (0.3 * currentPos.y),
+            finalPos.x + 20,
+            currentPos.y - (0.3 * currentPos.y),
+            finalPos.x, finalPos.y);
+
         // draw the tracking rectangle
-        let newPoints: { x: number, y: number } = {x: 0, y:0};
-    
+        let newPoints: { x: number, y: number } = { x: 0, y: 0 };
+
         if (sliderValue) {
             var percent = (sliderValue) / 100
-    
+
             newPoints = this.getCubicBezierXYatPercent({
-                x: 100,
-                y: 670
+                x: currentPos.x,
+                y: currentPos.y
             }, {
-                x: 80,
-                y: 200
+                x: currentPos.x - 20,
+                y: currentPos.y - (0.3 * currentPos.y)
             }, {
-                x: 330,
-                y: 200
+                x: finalPos.x + 20,
+                y: currentPos.y - (0.3 * currentPos.y)
             }, {
-                x: 310,
-                y: 700
+                x: finalPos.x,
+                y: finalPos.y
             }, percent);
         }
-        this.drawEllipse(newPoints, "red");
+
+        // set the new position of the block
+        this.ui.getBlocks()[this.currentEvent.blockId].update(newPoints);
     }
 
-/*     public move(command: string): void {
+    public adjustTowerHeight() {
+        let toTowerIndex: number = this.getTowerIndex(this.currentEvent.towerTo);
+        let fromTowerIndex: number = this.getTowerIndex(this.currentEvent.towerFrom);
 
-    } */
+        // adjust the height of the towers
+        this.ui.getTowers()[fromTowerIndex].setTowerTopPosition(
+            this.ui.getTowers()[fromTowerIndex].getTowerTopPosition().y + this.ui.getBlocks()[this.currentEvent.blockId].getRadiusY()
+        );
 
-    // draw tracking rect at xy
-    public drawEllipse(point: { x: number, y: number }, color: string) {
-        let ctx: CanvasRenderingContext2D = this.ui.getContext();
-        ctx.fillStyle = "cyan";
-        ctx.strokeStyle = "black";
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.ellipse(point.x, point.y, 30, 30, 0, 0, Math.PI, true);
-        // ctx.rect(point.x - 13, point.y - 8, 25, 15);
-        ctx.fill();
-        // ctx.stroke();
+        this.ui.getTowers()[toTowerIndex].setTowerTopPosition(
+            this.ui.getTowers()[toTowerIndex].getTowerTopPosition().y - this.ui.getBlocks()[this.currentEvent.blockId].getRadiusY()
+        );
     }
+
+    public getTowerIndex(towerId: string): number {
+        let towerIndex: number = -1;
+
+        if(towerId == "A") {
+            towerIndex = 0;
+        } else if (towerId == "B") {
+            towerIndex = 1;
+        } else if (towerId == "C") {
+            towerIndex = 2;
+        }
+
+        return towerIndex;
+    }
+
+    public isEventUpdated(): boolean {
+        if (
+            this.currentEvent.blockId === this.eq.getCurrentEvent().blockId
+            && this.currentEvent.towerFrom === this.eq.getCurrentEvent().towerFrom
+            && this.currentEvent.towerTo === this.eq.getCurrentEvent().towerTo
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+    /*     public move(command: string): void {
+    
+        } */
 
     // cubic bezier percent is 0-1
     public getCubicBezierXYatPercent(

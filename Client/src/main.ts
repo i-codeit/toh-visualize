@@ -1,15 +1,28 @@
 
 import { UIObjects } from "./ui-objects";
 import { Physics } from "./physics";
+import { EventQueue } from "./eventQueue";
 
 let ui: UIObjects = new UIObjects();
-let physics: Physics = new Physics(ui);
+let eq: EventQueue = new EventQueue();
+let physics: Physics = new Physics(ui, eq);
+
 let lastTime = 0;
 
 export function initialize(): void {
     initializeObjects();
     draw();
-    // moveBlock();
+
+    // dummy insert element 
+    eq.pushEvent({blockId: 9, towerFrom: "A", towerTo: "B"});
+    eq.pushEvent({blockId: 8, towerFrom: "A", towerTo: "B"});
+    eq.pushEvent({blockId: 7, towerFrom: "A", towerTo: "C"});
+    eq.pushEvent({blockId: 8, towerFrom: "B", towerTo: "C"});
+    // eq.pushEvent({blockId: 2, towerFrom: 0, towerTo: 2});
+
+    // Pop the first event here
+    eq.popEvent();
+
     gameLoop(lastTime);
 }
 
