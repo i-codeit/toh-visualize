@@ -76,17 +76,7 @@ export async function onClickEvent(): Promise<void> {
 }
 
 export function initializeObjects(): void {
-    let canvas: HTMLCanvasElement = ui.getCanvas();
-    let ctx: CanvasRenderingContext2D = ui.getContext();
-
-    let canvasWidth = canvas.clientWidth;
-    let canvasHeight = canvas.clientHeight;
-
-    // create the outer boundary
-    ctx.rect(0, 0, canvasWidth, canvasHeight);
-    ctx.fillStyle = 'black';
-    ctx.stroke();
-
+    createOuterBoundary();
     // initialize the towers
     ui.initializeTowers();
 
@@ -97,7 +87,23 @@ export function initializeObjects(): void {
     ui.initializeTowerTop();
 }
 
+function createOuterBoundary() {
+    let canvas: HTMLCanvasElement = ui.getCanvas();
+    let ctx: CanvasRenderingContext2D = ui.getContext();
+
+    let canvasWidth = canvas.clientWidth;
+    let canvasHeight = canvas.clientHeight;
+
+    // create the outer boundary
+    ctx.beginPath();
+    ctx.lineWidth = 2;
+    ctx.rect(0, 0, canvasWidth, canvasHeight);
+    ctx.fillStyle = 'black';
+    ctx.closePath();
+    ctx.stroke();
+}
 function draw() {
+    createOuterBoundary();
     ui.getTowers().forEach((tower) => {
         tower.draw();
     });
