@@ -40,12 +40,15 @@ export async function onClickEvent(): Promise<void> {
     eq.pushEvent({blockId: 7, towerFrom: "A", towerTo: "B"});
     eq.pushEvent({blockId: 8, towerFrom: "C", towerTo: "A"}); */
 
-    let url1 = 'http://127.0.0.1:3000/';
+    let url1 = `http://127.0.0.1:3000?blocks=${ui.getNumberOfBlocksToDraw()}`;
     let actualObj: EventInterface[] = [];
 
     axios({
         method: 'get',
-        url: url1        
+        url: url1
+        /* data : {
+            blocks: ui.getNumberOfBlocksToDraw()
+        } */
     })
     .then((response: any) => {
         console.log(response.data);

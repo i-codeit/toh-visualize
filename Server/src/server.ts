@@ -8,13 +8,16 @@ const router = new Router();
 
 router.get('/*', async (ctx) => {
     let data: EventInterface[] = [];
-    towerOfHanoi(4, "A", "C", "B", data);
+    
     // fs.appendFileSync('./newCustomer.json', JSON.stringify(data));
     ctx.response.set('Access-Control-Allow-Origin', '*'); // = {'Access-Control-Allow-Origin': 'http://127.0.0.1:3000'};
     ctx.response.set('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With, remember-me');
+    
+    let obj;
+    obj = ctx.request.query;
+    console.log(obj.blocks);
+    towerOfHanoi(obj.blocks, "A", "C", "B", data);
     ctx.response.body = JSON.stringify(data);
-    /* console.log(ctx.response);
-    console.log(ctx.request); */
 });
 
 app.use(router.routes());
