@@ -27,6 +27,7 @@ export class Tower implements Object{
         this.ctx.lineWidth = this.lineWidth;
         this.ctx.moveTo(this.position.x, this.position.y);
         this.ctx.lineTo(this.position.x, this.towerHeight);
+        this.ctx.closePath();
         this.ctx.stroke();
     }
 

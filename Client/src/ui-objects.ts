@@ -7,12 +7,14 @@ export class UIObjects {
     private blocks: Block[];
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
+    private numOfBlocks: number;
 
     constructor() {
         this.towers = Array<Tower>();
         this.blocks = Array<Block>();
         this.canvas = document.getElementById("toh") as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d")!;
+        this.numOfBlocks = 4;
 
         return this;
     }
@@ -45,6 +47,7 @@ export class UIObjects {
     }
     
     public initializeBlocks(): void {
+        this.blocks.splice(0, this.blocks.length);
         let numberOfBlocks: number = this.getNumberOfBlocksToDraw();
         let currentHeight: number = this.canvas.clientHeight;
     
@@ -70,7 +73,11 @@ export class UIObjects {
     }
 
     public getNumberOfBlocksToDraw(): number {
-        return 10;
+        return this.numOfBlocks;
+    }
+
+    public setNumberOfBlocksToDraw(value: number) {
+        this.numOfBlocks = value;
     }
 
     public getContext(): CanvasRenderingContext2D {
@@ -90,6 +97,6 @@ export class UIObjects {
     }
 
     public clearCanvas(): void {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
     }
 }

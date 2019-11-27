@@ -2,24 +2,19 @@ import * as Koa from "koa";
 import * as Router from "koa-router";
 import {towerOfHanoi} from "./backend";
 import { EventInterface } from "./eventInterface";
-// import fs = require('fs');
 
 const app = new Koa();
 const router = new Router();
 
-/* app.use(async (ctx, next) => {
-    // Log the request to the console
-    console.log('Url:', ctx.url);
-    // Pass the request to the next middleware function
-    await next();
-}); */
-
 router.get('/*', async (ctx) => {
     let data: EventInterface[] = [];
-    towerOfHanoi(4, "A", "B", "C", data);
-
+    towerOfHanoi(4, "A", "C", "B", data);
     // fs.appendFileSync('./newCustomer.json', JSON.stringify(data));
-    ctx.body = data;
+    ctx.response.set('Access-Control-Allow-Origin', '*'); // = {'Access-Control-Allow-Origin': 'http://127.0.0.1:3000'};
+    ctx.response.set('Access-Control-Allow-Headers', 'Content-Type, Accept, X-Requested-With, remember-me');
+    ctx.response.body = JSON.stringify(data);
+    /* console.log(ctx.response);
+    console.log(ctx.request); */
 });
 
 app.use(router.routes());

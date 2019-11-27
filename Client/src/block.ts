@@ -32,6 +32,7 @@ export class Block implements Object{
             0,
             0,
             Math.PI, true);
+        this.ctx.closePath();
         this.ctx.fill();
 
         // Add text
