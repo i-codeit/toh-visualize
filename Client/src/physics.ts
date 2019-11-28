@@ -1,7 +1,6 @@
 import { UIObjects } from "./ui-objects";
 import { EventQueue } from "./eventQueue";
 import { EventInterface } from "./eventInterface";
-import { TowerId } from "./constants";
 
 export class Physics {
     private percent: number;
@@ -53,7 +52,10 @@ export class Physics {
 
                 // adjust the height of the towers
                 this.adjustTowerHeight();
+
+                // set update to false, so it doesn't animate in this iteration
                 this.update = false;
+
                 // Pop the queue to get next event
                 this.eq.popEvent();
             };
@@ -66,8 +68,6 @@ export class Physics {
     public moveBlock(sliderValue: number): void {
         let ctx: CanvasRenderingContext2D = this.ui.getContext();
         let toTowerIndex: number = this.getTowerIndex(this.currentEvent.towerTo);
-
-        let fromTowerIndex: number = this.getTowerIndex(this.currentEvent.towerFrom);
 
         // Current position of the block to move
         let currentPos = this.ui.getBlocks()[this.currentEvent.blockId].getPosition();
@@ -84,7 +84,7 @@ export class Physics {
             currentPos.y - (0.3 * currentPos.y),
             finalPos.x, finalPos.y);
 
-        // draw the tracking rectangle
+        // draw the tracking path
         let newPoints: { x: number, y: number } = { x: 0, y: 0 };
 
         if (sliderValue) {
@@ -113,7 +113,6 @@ export class Physics {
         let toTowerIndex: number = this.getTowerIndex(this.currentEvent.towerTo);
         let fromTowerIndex: number = this.getTowerIndex(this.currentEvent.towerFrom);
 
-        // adjust the height of the towers
         this.ui.getTowers()[fromTowerIndex].setTowerTopPosition(
             this.ui.getTowers()[fromTowerIndex].getTowerTopPosition().y + this.ui.getBlocks()[this.currentEvent.blockId].getRadiusY()
         );
@@ -148,9 +147,6 @@ export class Physics {
 
         return true;
     }
-    /*     public move(command: string): void {
-    
-        } */
 
     // cubic bezier percent is 0-1
     public getCubicBezierXYatPercent(

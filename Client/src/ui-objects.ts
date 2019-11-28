@@ -2,6 +2,9 @@ import { Tower } from "./tower";
 import { Block } from "./block";
 import { Constants, TowerId, BlockColor } from "./constants";
 
+/**
+ * UI class which has all the canvas elements
+ */
 export class UIObjects {
     private towers: Tower[];
     private blocks: Block[];
@@ -19,11 +22,10 @@ export class UIObjects {
         return this;
     }
 
-    /* public createContext(): void{
-        this.canvas = document.getElementById("toh") as HTMLCanvasElement;
-        this.ctx = this.canvas.getContext("2d")!;
-    } */
-
+    /**
+     * Towers are initialized, with x,y cordinates set,
+     * taking care of the tower width also
+     */
     public initializeTowers(): void {
         let leftWidth: number;
         let rigthWidth: number;
@@ -46,6 +48,9 @@ export class UIObjects {
         }
     }
     
+    /**
+     * Blocks are initialized on top on one another on Tower A
+     */
     public initializeBlocks(): void {
         this.blocks.splice(0, this.blocks.length);
         let numberOfBlocks: number = this.getNumberOfBlocksToDraw();
@@ -63,6 +68,9 @@ export class UIObjects {
         }
     }
 
+    /**
+     * Initial height of each tower is set, based on the number of blocks it holds
+     */
     public initializeTowerTop() {
         let canvasHeight = this.canvas.clientHeight;
         this.towers[0].setTowerTopPosition(

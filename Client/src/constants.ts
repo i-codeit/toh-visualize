@@ -6,7 +6,8 @@ export const Constants = {
     ELLIPSE_RADIUS_RATIO: 0.6,
     MAGIC_REDUCE_RATIO: 4.5,
     MAGIC_TEXT_ALIGN: 4,
-    FPS: 30
+    FPS: 30,
+    BOUNDARY_LINEWIDTH: 2
 };
 
 export enum TowerId {
